@@ -1,6 +1,6 @@
 extends KinematicBody
 
-var run_speed := 8.0
+var run_speed: float
 var sidestep_speed := 5.0
 var velocity := Vector3()
 
@@ -8,6 +8,9 @@ var time: float = 0.0
 var step_freq: float = 2.0
 var step_height: float = 0.2
 var step_tilt: float = 8.0
+
+var gravity: float
+var jump_speed: float
 
 
 onready var body_hinge = $BodyHinge
@@ -20,12 +23,17 @@ func _physics_process(delta):
 	
 	var sideways: float = 0.0
 	
-	if Input.is_action_just_pressed("move_right"):
+	if Input.is_action_pressed("move_right"):
 		sideways += 1.0
 	
-	if Input.is_action_just_pressed("move_left"):
+	if Input.is_action_pressed("move_left"):
 		sideways -= 1.0
 	
 	velocity.x = sideways * sidestep_speed
 	velocity.z = -run_speed
 	move_and_slide(velocity)
+
+func setup_jump(length: float, height: float, speed: float):
+	run_speed = speed
+	gravity = 8.0 * height * speed / (length * length)
+	jump_speed = 4.0 * height * speed / lengths
