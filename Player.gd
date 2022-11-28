@@ -29,11 +29,18 @@ func _physics_process(delta):
 	if Input.is_action_pressed("move_left"):
 		sideways -= 1.0
 	
+	if Input.is_action_just_pressed("jump") and is_on_floor():
+		velocity.y = jump_speed
+	
+	velocity.y -= gravity * delta
 	velocity.x = sideways * sidestep_speed
 	velocity.z = -run_speed
-	move_and_slide(velocity)
+	velocity = move_and_slide(velocity, Vector3.UP)
+	for index in range (get_slide_count()):
+		var collision = get_slide_collision(index)
+		var collision_object =collision.collider as CollisionObject
 
 func setup_jump(length: float, height: float, speed: float):
 	run_speed = speed
-	gravity = 8.0 * height * speed / (length * length)
-	jump_speed = 4.0 * height * speed / lengths
+	gravity = 8.0 * height * speed * speed / (length * length)
+	jump_speed = 4.0 * height * speed / length
